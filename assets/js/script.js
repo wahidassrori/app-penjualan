@@ -1,7 +1,6 @@
 window.addEventListener('load', () => {
 
-    const hamburgerMenu = document.querySelector('.hamburger-menu')
-    if (hamburgerMenu) {
+    if (document.querySelector('.hamburger-menu')) {
         document
             .querySelector('.hamburger-menu')
             .addEventListener('click', () => hamburgerMenu())
@@ -14,8 +13,7 @@ window.addEventListener('load', () => {
         }
     }
 
-    const halamanIndex = document.querySelector('.grid-container');
-    if (halamanIndex) {
+    if (document.querySelector('.grid-container')) {
         hakAksesMenu()
 
         async function hakAksesMenu() {
@@ -40,8 +38,7 @@ window.addEventListener('load', () => {
 
     /* -------------- Halaman Login ------------------ */
 
-    const containerLogin = document.querySelector('.container-login')
-    if (containerLogin) {
+    if (document.querySelector('.container-login')) {
         document.querySelector('#login-form').addEventListener('submit', (e) => {
             e.preventDefault()
             login()
@@ -81,8 +78,7 @@ window.addEventListener('load', () => {
 
     /* -------------- Halaman User ------------------ */
 
-    const halamanUser = document.querySelector('.halaman-user')
-    if (halamanUser) {
+    if (document.querySelector('.halaman-user')) {
         // menu tab
         document.querySelector('.menu-data-user').addEventListener('click', () => {
             document.querySelector('.content-data-user').style.display = 'block';
@@ -104,7 +100,6 @@ window.addEventListener('load', () => {
 
         function buttonFormTambahUser() {
             const addUserForm = document.querySelector('.form-tambah-user');
-            console.log('tampilkan form');
             addUserForm.classList.toggle('form-tambah-user-toggle');
         }
 
@@ -742,8 +737,7 @@ window.addEventListener('load', () => {
 
     /* -------------- Halaman Gudang ------------------ */
 
-    const halamanGudang = document.querySelector('.halaman-gudang')
-    if (halamanGudang) {
+    if (document.querySelector('.halaman-gudang')) {
 
         showDataGudang();
 
@@ -803,7 +797,6 @@ window.addEventListener('load', () => {
                 })
                 .then(response => response.json())
                 .then(response => {
-                    console.log(response);
                     if (response.hasOwnProperty('error')) {
                         throw new Error(response.error);
                     } else {
@@ -916,24 +909,27 @@ window.addEventListener('load', () => {
         }
     }
 
-
     /*
     ############################################################################
                                     Halaman Produk
     ############################################################################
     */
 
-    const halamanProduk = document.querySelector('.halaman-produk');
-
-    if (halamanProduk) {
+    if (document.querySelector('.halaman-produk')) {
 
         document.querySelector('.menu-daftar-produk').addEventListener('click', () => {
             document.querySelector('.content-daftar-produk').style.display = 'block';
             document.querySelector('.content-tambah-produk').style.display = 'none';
+            document.querySelector('.content-update-produk').style.display = 'none';
         });
         document.querySelector('.menu-tambah-produk').addEventListener('click', () => {
             document.querySelector('.content-daftar-produk').style.display = 'none';
             document.querySelector('.content-tambah-produk').style.display = 'block';
+            document.querySelector('.content-update-produk').style.display = 'none';
+        });
+        document.querySelector('.back-daftar-produk').addEventListener('click', () => {
+            document.querySelector('.content-daftar-produk').style.display = 'block';
+            document.querySelector('.content-update-produk').style.display = 'none';
         });
 
         // menampilkan data produk
@@ -958,22 +954,35 @@ window.addEventListener('load', () => {
                 .then(res => res.json())
                 .then(res => {
                     let data = '';
-                    let nomor = 1;
-                    for (let i = 0; i < res.length; i++) {
-                        nomor += i;
-                        data += `
+                    if (res.hasOwnProperty('kosong')) {
+                        data = `
                             <tr>
-                                <td align="center">${nomor}</td>
+                                <td colspan="7">${res.kosong}</td>
+                            </tr>
+                        `;
+                    } else {
+                        let nomor = 1;
+                        for (let i = 0; i < res.length; i++) {
+                            data += `
+                            <tr>
+                                <td align="center">${i+1}</td>
                                 <td align="center">${res[i].kode_produk}</td>
                                 <td>${res[i].produk}</td>
                                 <td align="center">${res[i].harga}</td>
                                 <td align="center">${res[i].stok}</td>
-                                <td align="center">${res[i].gambar}</td>
-                                <td align="center">Update Delete</td>
+                                <td align="center"><img class="img-produk" src="assets/img/${res[i].gambar}"></td>
+                                <td align="center"><button id="${res[i].kode_produk}" class="button-orange button-small id-update">Update</button> <button id="${res[i].kode_produk}" class="button-red button-small id-delete">Delete</button></td>
                             </tr>
                         `;
+                        }
                     }
+
                     document.querySelector('.table-produk').innerHTML = data;
+                })
+                .then(() => {
+                    update();
+                    // delete produk
+                    deleteProduk();
                 })
                 .catch(error => console.log(error));
         }
@@ -987,10 +996,360 @@ window.addEventListener('load', () => {
                     method: 'POST',
                     body: formdata
                 })
-                .then(res => res.text())
-                .then(res => console.log(res))
+                .then(res => res.json())
+                .then(res => {
+                    if (res.hasOwnProperty('duplikasi_kode_produk')) {
+                        alert(res.duplikasi_kode_produk);
+                    } else if (res.hasOwnProperty('duplikasi_nama_produk')) {
+                        alert(res.duplikasi_nama_produk);
+                    } else if (res.hasOwnProperty('error')) {
+                        throw new Error(res.error);
+                    } else if (res.hasOwnProperty('gagal')) {
+                        alert(res.gagal);
+                    } else {
+                        alert(res.sukses);
+                        showDataProduk();
+                        tambahProduk.reset();
+                    }
+                })
                 .catch(error => console.log(error));
         }
+
+        function update() {
+            const idUpdate = document.querySelectorAll('.id-update');
+            for (let index = 0; index < idUpdate.length; index++) {
+                idUpdate[index].addEventListener('click', () => {
+                    document.querySelector('.content-update-produk').style.display = 'block';
+                    document.querySelector('.content-daftar-produk').style.display = 'none';
+                    const id = idUpdate[index].getAttribute('id');
+                    fetch('core/proses.php', {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                proses_produk: 'update_produk',
+                                idproduk: id
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(response => {
+                            document.querySelector('#up-kode-produk').value = response.kode_produk;
+                            document.querySelector('#update-kode-produk').value = response.kode_produk;
+                            document.querySelector('#update-produk').value = response.produk;
+                            document.querySelector('#update-harga').value = response.harga;
+                            document.querySelector('#update-stok').value = response.stok;
+                            document.querySelector('#update-file-foto').src = 'assets/img/' + response.gambar;
+                        })
+                        .catch(error => console.log(error));
+                });
+            }
+        }
+
+        document.querySelector('#form-update-produk').addEventListener('submit', (e) => {
+            e.preventDefault();
+            edit();
+        });
+
+        function edit() {
+            const updateProduk = document.querySelector('#form-update-produk');
+            // const fileFoto = document.querySelector('#file-foto');
+            let formdata = new FormData(updateProduk);
+            formdata.append('proses_produk', 'edit_produk');
+            fetch('core/proses_produk.php', {
+                    method: 'POST',
+                    body: formdata
+                })
+                .then(response => response.json())
+                .then(response => {
+                    if (response.hasOwnProperty('gagal')) {
+                        throw new Error(response.error);
+                    } else if (response.hasOwnProperty('duplikasi_nama_produk')) {
+                        alert('Error : ' + response.duplikasi_nama_produk);
+                    } else {
+                        alert(response.sukses);
+                        showDataProduk();
+                    }
+                })
+                .catch(error => console.log(error));
+        }
+
+        function deleteProduk() {
+            const id = document.querySelectorAll('.id-delete');
+            for (let index = 0; index < id.length; index++) {
+                id[index].addEventListener('click', () => {
+                    const data = {
+                        proses_produk: 'delete_produk',
+                        id: id[index].getAttribute('id')
+                    }
+                    fetch('core/proses.php', {
+                            method: 'POST',
+                            body: JSON.stringify(data)
+                        })
+                        .then(response => response.json())
+                        .then(response => {
+                            if (response.hasOwnProperty('error')) {
+                                throw new Error(response.error);
+                            } else {
+                                alert(response.sukses);
+                                showDataProduk();
+                            }
+                        })
+                        .catch(error => console.log(error))
+                });
+            }
+        }
+
+    }
+
+    /*
+    ############################################################################
+                                    Halaman Pelanggan
+    ############################################################################
+    */
+
+    if (document.querySelector('.halaman-pelanggan')) {
+
+        $('#table_id').DataTable({
+            "ajax": {
+                "url": "core/data-pelanggan.php",
+                "type": "POST",
+                "datatype": "json"
+            },
+            columns: [{
+                    data: 'nama'
+                },
+                {
+                    data: 'no_telp'
+                }
+            ]
+        });
+
+
+    }
+
+    /*
+    ############################################################################
+                                    Halaman Laporan
+    ############################################################################
+    */
+
+    if (document.querySelector('.halaman-laporan')) {
+
+        $('#table-laporan').DataTable({
+            "ajax": {
+                "url": "core/data-laporan.php",
+                "type": "POST",
+                "datatype": "json"
+            },
+            columns: [{
+                    data: 'no'
+                },
+                {
+                    data: 'customer'
+                },
+                {
+                    data: 'no_nota'
+                },
+                {
+                    data: 'kasir'
+                },
+                {
+                    data: 'tanggal'
+                },
+                {
+                    data: 'total'
+                },
+                {
+                    data: 'keterangan'
+                }
+            ]
+        });
+
+
+    }
+
+
+    /*
+    ############################################################################
+                                    Halaman Penjualan
+    ############################################################################
+    */
+
+    if (document.querySelector('.halaman-penjualan')) {
+
+        const cariPelanggan = document.querySelector('.cari-pelanggan');
+        cariPelanggan.addEventListener('input', () => {
+            $('.cari-pelanggan').autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: 'core/pelanggan.php',
+                        type: 'post',
+                        dataType: 'json',
+                        data: {
+                            search: request.term
+                        },
+                        success: function (data) {
+                            response(data);
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    document.querySelector('.cari-pelanggan').value = "";
+                    document.querySelector('#nama-customer').value = ui.item.label;
+                    document.querySelector('#customer-id').value = ui.item.value;
+                    fetch('core/proses.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                transaksi: 'get_no_nota'
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(response => {
+                            let date = new Date();
+                            let year = date.getFullYear();
+                            let arrMonth = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+                            let month = date.getMonth();
+                            let day = date.getDate();
+                            let inv = 'INV' + day + '' + arrMonth[month] + '' + year + '' + response;
+                            document.querySelector('#no-nota').value = inv;
+                            document.querySelector('#no-nota-form').value = inv;
+                        });
+                    return false;
+                }
+            });
+        });
+
+        document.querySelector('.button-tambah-customer').addEventListener('click', () => {
+            // document.querySelector('.add-customer').style.display = "block";
+            let addCustomer = document.querySelector('.add-customer');
+            addCustomer.classList.toggle('add-customer-toggle');
+        });
+
+        document.querySelector('.button-simpan-customer').addEventListener('click', (e) => {
+            e.preventDefault();
+            // document.querySelector('.add-customer').style.display = "none";
+        });
+
+        document.querySelector('#create-element-produk').addEventListener('click', () => {
+            createElementProduk();
+        });
+
+        document.querySelector('.form-bottom').addEventListener('click', (e) => {
+            if (e.target.getAttribute('class') === 'button-red delete-input') {
+                e.target.parentElement.remove();
+            }
+            if (e.target.getAttribute('class') === 't-produk') {
+                let parent = e.target.parentElement;
+                let produk = parent.children[0].getAttribute('class');
+                let harga = parent.children[1].getAttribute('class');
+                $('.' + produk).autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: 'core/data_produk.php',
+                            type: 'post',
+                            dataType: 'json',
+                            data: {
+                                search: request.term
+                            },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
+                    },
+                    select: function (event, ui) {
+                        parent.children[0].value = ui.item.label;
+                        parent.children[1].value = ui.item.value;
+                        parent.children[4].value = ui.item.kode_produk;
+                        parent.children[5].value = ui.item.value;
+                        return false;
+                    }
+                });
+
+
+            }
+            if (e.target.getAttribute('name') === 'qty[]') {
+                let parent = e.target.parentElement;
+                parent.children[2].addEventListener('input', () => {
+                    let harga = parent.children[1].value;
+                    let subTotal = harga * parent.children[2].value;
+                    parent.children[3].value = subTotal;
+                    parent.children[6].value = subTotal;
+                    let jumlahProduk = document.querySelectorAll('.t-qty');
+                    let totalItem = 0;
+                    for (let i = 0; i < jumlahProduk.length; i++) {
+                        totalItem += parseInt(jumlahProduk[i].value);
+                    }
+                    let JumlahItem = document.querySelectorAll('.jumlah-item');
+                    for (let i = 0; i < JumlahItem.length; i++) {
+                        JumlahItem[i].value = totalItem;
+                    }
+                    let jumlahBayar = document.querySelectorAll('.t-sub-total');
+                    let totalBayar = 0;
+                    for (let i = 0; i < jumlahBayar.length; i++) {
+                        totalBayar += parseInt(jumlahBayar[i].value);
+                    }
+                    let TotalBayar = document.querySelectorAll('.total-bayar');
+                    for (let i = 0; i < TotalBayar.length; i++) {
+                        TotalBayar[i].value = totalBayar;
+                    }
+                });
+            }
+        });
+
+        function createElementProduk() {
+            let content = document.createElement('div');
+            content.classList.add('input-transaksi');
+            content.innerHTML = `
+            <input class="t-produk" type="text">
+            <input class="t-harga" type="text" placeholder="Harga" disabled>
+            <input class="t-qty" type="number" name="qty[]" placeholder="Qty">
+            <input class="t-sub-total" type="text" placeholder="Sub Total" disabled>
+            <input class="kode-produk" type="text" name="produk[]" hidden>
+            <input type="text" name="harga[]" hidden>
+            <input type="text" name="sub_total[]" hidden>
+                <button type="button" class="button-red delete-input">-</button>
+            `;
+            const endTransaction = document.querySelector('.end-transaction');
+            const parent = document.querySelector('.form-bottom');
+            parent.insertBefore(content, endTransaction);
+        }
+
+        document.querySelector('#bayar').addEventListener('input', () => {
+            let totalBayar = document.querySelector('.total-bayar').value;
+            let bayar = document.querySelector('#bayar').value;
+            let kembali = bayar - totalBayar;
+            document.querySelector('#kembali').value = kembali;
+        });
+
+        // add customer
+        document.querySelector('#submit-add-customer').addEventListener('click', (e) => {
+            e.preventDefault();
+            const addCustomer = document.querySelector('#add-customer');
+            let data = new FormData(addCustomer);
+            data.append('submit', 'add_customer');
+            fetch('core/add_customer.php', {
+                    method: 'POST',
+                    body: data
+                })
+                .then(response => response.json())
+                .then(response => {
+                    // alert(response);
+                    if (response.hasOwnProperty('duplikat')) {
+                        alert(response.duplikat);
+                        // document.querySelector('#pesan-pelanggan').html = response.duplikat;
+                        // document.querySelector('#pesan-pelanggan').style.color = 'red';
+                    }
+                    if (response.hasOwnProperty('sukses')) {
+                        alert(response.sukses);
+                        document.querySelector('#add-customer').reset();
+                        // document.querySelector('#pesan-pelanggan').html = response.sukses;
+                        // document.querySelector('#pesan-pelanggan').style.color = 'green';
+                    }
+                })
+                .catch(error => console.log(error));
+        });
+
 
     }
 

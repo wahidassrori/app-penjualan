@@ -285,10 +285,55 @@ if (isset($result['proses_usergrup'])) {
     }
 } elseif (isset($result['proses_produk']) && !empty($result['proses_produk'])) {
     if ($result['proses_produk'] === 'show_data_produk') {
-        $query = mysqli_query($mysqli, "SELECT * FROM produk");
-        while ($rows = mysqli_fetch_assoc($query)) {
-            $data[] = $rows;
+        $query = mysqli_query($mysqli, "SELECT * FROM produk LIMIT 100");
+        if (mysqli_num_rows($query) > 0) {
+            while ($rows = mysqli_fetch_assoc($query)) {
+                $data[] = $rows;
+            }
+        } else {
+            $data = ['kosong' => 'Daftar produk kosong'];
         }
         echo json_encode($data);
+    } elseif ($result['proses_produk'] === 'update_produk') {
+        $query = mysqli_query($mysqli, "SELECT * FROM produk WHERE kode_produk='{$result['idproduk']}'");
+        if ($query) {
+            $pesan = mysqli_fetch_assoc($query);
+        } else {
+            $pesan = ['error' => 'Error : ' . mysqli_error($mysqli)];
+        }
+        echo json_encode($pesan);
+    } elseif ($result['proses_produk'] === 'delete_produk') {
+        $query_tampil = mysqli_query($mysqli, "SELECT gambar FROM produk WHERE kode_produk='{$result['id']}'");
+        $gambar = mysqli_fetch_assoc($query_tampil);
+        if (unlink('../assets/img/' . $gambar['gambar'])) {
+            $query = mysqli_query($mysqli, "DELETE FROM produk WHERE kode_produk='{$result['id']}'");
+            if ($query) {
+                $pesan = ['sukses' => 'Data berhasil dihapus'];
+            } else {
+                $pesan = ['error' => 'Error : ' . mysqli_error($mysqli)];
+            }
+        }
+        echo json_encode($pesan);
+    }
+}
+
+if (isset($result['transaksi'])) {
+    if ($result['transaksi'] === 'get_produk') {
+        $query = mysqli_query($mysqli, "SELECT produk FROM produk LIMIT 5") or die(mysqli_error($mysqli));
+        if (mysqli_num_rows($query) > 0) {
+            while ($rows = mysqli_fetch_assoc($query)) {
+                $pesan[] = $rows;
+            }
+        } else {
+            $pesan = ['kosong' => 'Data tidak ditemukan'];
+        }
+        // var_dump($pesan);
+        echo json_encode($pesan);
+    }
+
+    if ($result['transaksi'] === 'get_no_nota') {
+        $query = mysqli_query($mysqli, "SELECT * FROM detail_transaksi") or die(mysqli_error($mysqli));
+        $pesan = mysqli_num_rows($query);
+        echo json_encode($pesan += 1);
     }
 }

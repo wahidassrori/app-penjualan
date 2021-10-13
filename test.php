@@ -1,7 +1,3 @@
-<?php
-require 'core/core.php';
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,16 +9,17 @@ require 'core/core.php';
 </head>
 
 <body>
-
-    <form action="proses_test.php" method="post" enctype="multipart/form-data">
-        <input type="text" name="username">
-        <input type="file" name="gambar">
-        <input type="submit" value="proses">
-    </form>
+    <button id="new">New Tab</button>
 
     <script>
+        const baru = document.querySelector('#new');
 
+        baru.addEventListener('click', () => {
+            window.open('invoice_pdf.php', '_blank');
+        });
     </script>
+
+
 </body>
 
 </html>

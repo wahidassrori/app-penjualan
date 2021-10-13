@@ -66,8 +66,11 @@
                         <label>
                             <input type="checkbox" name="akses" class="akses" value="user"> User
                         </label>
-                        <label>
+                        <!-- <label>
                             <input type="checkbox" name="akses" class="akses" value="gudang"> Gudang
+                        </label> -->
+                        <label>
+                            <input type="checkbox" name="akses" class="akses" value="customer"> Customer
                         </label>
                         <label>
                             <input type="checkbox" name="akses" class="akses" value="produk"> Produk
@@ -93,8 +96,11 @@
                         <label>
                             <input type="checkbox" name="akses" class="akses-usergrup" value="user"> User
                         </label>
-                        <label>
+                        <!-- <label>
                             <input type="checkbox" name="akses" class="akses-usergrup" value="gudang"> Gudang
+                        </label> -->
+                        <label>
+                            <input type="checkbox" name="akses" class="akses-usergrup" value="customer"> Customer
                         </label>
                         <label>
                             <input type="checkbox" name="akses" class="akses-usergrup" value="produk"> Produk

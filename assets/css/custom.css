@@ -33,6 +33,15 @@ input[type=file] {
     border: 1px solid #d0d0d0;
 }
 
+fieldset {
+    padding: 20px;
+    border: 1px solid #d0d0d0;
+}
+
+legend {
+    padding: 0 15px;
+}
+
 label {
     display: block;
 }
@@ -195,31 +204,10 @@ a {
     grid-area: header;
     background-color: #ffffff;
     border-bottom: 1px solid #d0d0d0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    font-weight: 700;
 }
 
 .hamburger-menu {
     display: none;
-}
-
-.profil {
-    display: flex;
-    align-items: center;
-}
-
-.profil img {
-    width: 25px;
-    height: 25px;
-    margin: 0 10px;
 }
 
 /* Sidebar */
@@ -228,18 +216,15 @@ a {
     background-color: #289ea2;
 }
 
-.sidebar-profil {
+.sidebar-header {
+    height: 50px;
     display: flex;
-    min-height: 200px;
     align-items: center;
-    justify-content: center;
-    flex-direction: column;
+    border-bottom: 1px solid #2b9599;
 }
 
-.sidebar-profil img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50px;
+.sidebar-header h2 {
+    margin-left: 20px;
 }
 
 .nama-profil {
@@ -641,6 +626,207 @@ Halaman Produk
     display: none;
 }
 
-.button-tambah-produk {
+.button-tambah-produk,
+.button-update-produk {
     margin-top: 15px;
+}
+
+.content-update-produk {
+    display: none;
+}
+
+.img-produk {
+    max-width: 60px;
+}
+
+/*
+############################################################################
+Halaman Customer
+############################################################################
+*/
+
+
+
+/*
+############################################################################
+Halaman Penjualan
+############################################################################
+*/
+
+.title-customer {
+    margin-bottom: 10px;
+}
+
+.search-customer {
+    display: flex;
+}
+
+.search-customer .button-blue {
+    border-radius: 0;
+}
+
+.add-customer {
+    margin: 20px 0;
+    display: none;
+}
+
+.add-customer-toggle {
+    display: block;
+}
+
+.add-customer .input-group label {
+    width: 200px;
+}
+
+.add-customer button {
+    margin-top: 10px;
+    margin-left: 170px;
+}
+
+.form-transaksi {
+    margin-top: 20px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+}
+
+.input-group:nth-child(2) {
+    margin-top: 10px;
+}
+
+.input-group label {
+    width: 150px;
+}
+
+.form-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+
+.form-transaksi-left {
+    width: 500px;
+}
+
+.form-transaksi-right {
+    width: 500px;
+}
+
+.form-bottom {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+}
+
+.input-transaksi {
+    display: flex;
+    margin-bottom: 5px;
+    position: relative;
+}
+
+.form-bottom input[type=text]:nth-child(2),
+.form-bottom input[type=text]:nth-child(3),
+.form-bottom input[type=text]:nth-child(4) {
+    border-left: 0;
+}
+
+.t-produk {
+    position: relative;
+}
+
+.auto-complete {
+    max-width: 700px;
+    width: 100%;
+    position: relative;
+}
+
+.autoCom {
+    position: absolute;
+    width: 100%;
+    background-color: white;
+    padding: 10px 10px;
+    z-index: 2;
+}
+
+.t-harga {
+    max-width: 110px;
+    width: 100%;
+}
+
+.t-qty {
+    max-width: 100px;
+    width: 100%;
+}
+
+.t-sub-total {
+    max-width: 150px;
+    width: 100%;
+}
+
+.t-input-produk {
+    width: 550px;
+}
+
+.t-btn {
+    padding: 0 13px;
+    margin-left: 10px;
+}
+
+.delete-input {
+    padding: 0 15px;
+    margin-left: 10px;
+}
+
+.tampilan-detail-transaksi {
+    margin-top: 10px;
+    margin-right: 45px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.tampilan-detail-transaksi .grup-item {
+    /* margin-top: 10px; */
+    display: flex;
+    align-items: center;
+}
+
+.tampilan-detail-transaksi .grup-item label {
+    min-width: 100px;
+}
+
+.print-nota {
+    margin-top: 10px;
+}
+
+.simpan-transaksi {
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+.pesan-transaksi-simpan {
+    color: green;
+}
+
+/* .tampilan-detail-transaksi-left {
+    min-width: 100px;
+}
+
+.tampilan-detail-transaksi-right {
+    min-width: 100px;
+} */
+
+@media (max-width: 768px) {
+    .form-transaksi-left {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .form-transaksi-right {
+        width: 100%;
+        margin-top: 10px;
+    }
 }

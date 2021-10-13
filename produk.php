@@ -40,6 +40,26 @@
                     <button type="submit" class="button-small button-green button-tambah-produk">Simpan</button>
                 </form>
             </div>
+            <div class="content-update-produk">
+                <button class="back-daftar-produk button-blue">
+                    << Kembali ke daftar produk</button>
+                        <form id="form-update-produk" enctype="multipart/form-data">
+                            <p class="pesan"></p>
+                            <label class="label-ve">Kode Produk</label>
+                            <input type="hidden" name="up_kode_produk" id="up-kode-produk">
+                            <input type="text" name="update_kode_produk" id="update-kode-produk" disabled required>
+                            <label class="label-ve">Produk</label>
+                            <input type="text" name="update_produk" id="update-produk" placeholder="Nama Produk" required>
+                            <label class="label-ve">Harga</label>
+                            <input type="text" name="update_harga" id="update-harga" placeholder="Harga" required>
+                            <label class="label-ve">Stok</label>
+                            <input type="text" name="update_stok" id="update-stok" placeholder="Stok" required>
+                            <label class="label-ve">Gambar</label>
+                            <img id="update-file-foto" src="" class="img-produk">
+                            <input type="file" name="up_file_foto" id="edit-file-foto">
+                            <button type="submit" class="button-small button-green button-update-produk">Simpan</button>
+                        </form>
+            </div>
         </div>
     </div>
 </div>
